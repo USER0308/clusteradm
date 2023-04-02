@@ -11,10 +11,12 @@ import (
 )
 
 var example = `
-# Join a cluster to the hub
+# Join a cluster to the hub 
 %[1]s join --hub-token <tokenID.tokenSecret> --hub-apiserver <hub_apiserver_url> --cluster-name <cluster_name>
-# Join a cluster to the hub with hosted mode
-%[1]s join --hub-token <tokenID.tokenSecret> --hub-apiserver <hub_apiserver_url> --cluster-name <cluster_name> --mode hosted --managed-cluster-kubeconfig <path_to_kubeconfig>
+# join a cluster to the hub with hosted mode
+%[1]s join --hub-token <tokenID.tokenSecret> --hub-apiserver <hub_apiserver_url> --cluster-name <cluster_name> --mode hosted --managed-cluster-kubeconfig <managed-cluster-kubeconfig-file>
+# join a cluster to the hub while the hub provided no valid CA data in kube-public namespace
+%[1]s join --hub-token <tokenID.tokenSecret> --hub-apiserver <hub_apiserver_url> --cluster-name <cluster_name> --ca-file <ca-file>
 `
 
 // NewCmd ...
@@ -45,6 +47,7 @@ func NewCmd(clusteradmFlags *genericclioptionsclusteradm.ClusteradmFlags, stream
 		},
 	}
 
+	genericclioptionsclusteradm.SpokeMutableFeatureGate.AddFlag(cmd.Flags())
 	cmd.Flags().StringVar(&o.token, "hub-token", "", "The token to access the hub")
 	cmd.Flags().StringVar(&o.hubAPIServer, "hub-apiserver", "", "The api server url to the hub")
 	cmd.Flags().StringVar(&o.caFile, "ca-file", "", "the file path to hub ca, optional")
